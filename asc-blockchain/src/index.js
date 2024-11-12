@@ -11,6 +11,7 @@ import DistributorLogin from './DistributorLogin';
 import RetailerLogin from './RetailerLogin';
 import './index.css';
 import CustomerSignup from './CustomerSignup';
+import FarmerSignup from './FarmerSignup';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -24,6 +25,7 @@ root.render(
       <Route path="/login/distributor" element={<DistributorLogin />} />
       <Route path="/login/retailer" element={<RetailerLogin />} />
       <Route path="/customer/signup" element={<CustomerSignup />} />
+      <Route path="/farmer/signup" element={<FarmerSignup />} />
     </Routes>
   </Router>
 );
