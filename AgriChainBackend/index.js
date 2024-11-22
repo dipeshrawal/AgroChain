@@ -6,6 +6,8 @@ const connectDB = require("./Connection/DatabaseConnection")
 const app = express();
 const port = 5000;
 const authRoutes = require("./routes/authRoutes")
+const productRoutes = require("./routes/productRoutes")
+
 
 // Middleware to parse JSON
 app.use(express.json());
@@ -23,6 +25,7 @@ connectDB();
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/products', productRoutes);
 
 
 app.listen(port, () => {

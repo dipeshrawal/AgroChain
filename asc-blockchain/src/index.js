@@ -12,12 +12,16 @@ import RetailerLogin from './RetailerLogin';
 import './index.css';
 import CustomerSignup from './CustomerSignup';
 import FarmerSignup from './FarmerSignup';
+import FarmerDashboard from './Pages/Farmer/FarmerDashboard';
+import ProductList from './Pages/Farmer/ProductList';
+import DistributorDashboard from './Pages/Distributor/DistributorDashboard';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <Router>
     <Routes>
-      <Route path="/" element={<Home />} />
+      <Route path="/" element={<FarmerDashboard />} />
+      <Route path="/home" element={<Home />} />
       <Route path="/about" element={<About />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/login/farmer" element={<FarmerLogin />} />
@@ -26,6 +30,9 @@ root.render(
       <Route path="/login/retailer" element={<RetailerLogin />} />
       <Route path="/customer/signup" element={<CustomerSignup />} />
       <Route path="/farmer/signup" element={<FarmerSignup />} />
+      
+      <Route path="/productlist" element={<ProductList />} />
+      <Route path="/distributordashboard" element={<DistributorDashboard />} />
     </Routes>
   </Router>
 );
