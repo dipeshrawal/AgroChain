@@ -1,9 +1,7 @@
-// models/User.js
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
+const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 
-// Create Schema for User
-const UserSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
@@ -12,21 +10,30 @@ const UserSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
+  },
+  role: {
+    type: String,
+    enum: ["farmer", "customer", "retailer", "distributor"], // Adding role field
+    required: true, // Make sure the role is always set during registration
+  },
+});
+
+// Pre-save hook for hashing the password
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) {
+    return next(); // Only hash the password if it's new or modified
+  }
+  try {
+    this.password = await bcrypt.hash(this.password, 10); // Hash the password
+    next();
+  } catch (error) {
+    next(error);
   }
 });
 
-// Pre-save hook to hash password before saving
-UserSchema.pre('save', async function(next) {
-  if (!this.isModified('password')) {
-    return next();
-  }
-  this.password = await bcrypt.hash(this.password, 10);
-  next();
-});
-
-// Method to compare entered password with hashed password
-UserSchema.methods.comparePassword = async function(password) {
-  return await bcrypt.compare(password, this.password);
+// Instance method for comparing passwords
+userSchema.methods.comparePassword = async function (plainPassword) {
+  return await bcrypt.compare(plainPassword, this.password); // Compare hashed password with the plain one
 };
 
-module.exports = mongoose.model('User', UserSchema);
+module.exports = mongoose.model("User", userSchema);

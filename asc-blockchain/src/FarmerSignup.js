@@ -1,18 +1,18 @@
 // FarmerSignup.js
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Sidebar from './Sidebar';
-import './FarmerSignup.css';
+import React, { useState } from "react";
+// import { useNavigate } from "react-router-dom";
+import Sidebar from "./Sidebar";
+import "./FarmerSignup.css";
 
 function FarmerSignup() {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [number, setNumber] = useState('');
-  const [address, setAddress] = useState('');
-  const [products, setProducts] = useState('');
-  const [password, setPassword] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [number, setNumber] = useState("");
+  const [address, setAddress] = useState("");
+  const [products, setProducts] = useState("");
+  const [password, setPassword] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -20,7 +20,14 @@ function FarmerSignup() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Farmer Signup Details:', { name, email, number, address, products, password });
+    console.log("Farmer Signup Details:", {
+      name,
+      email,
+      number,
+      address,
+      products,
+      password,
+    });
     // Here you would typically send the form data to the backend
   };
 
@@ -93,7 +100,9 @@ function FarmerSignup() {
               required
             />
           </div>
-          <button type="submit" className="signup-button">Signup</button>
+          <button type="submit" className="signup-button">
+            Signup
+          </button>
         </form>
       </div>
     </div>

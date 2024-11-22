@@ -1,27 +1,63 @@
-// CustomerLogin.js
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Sidebar from './Sidebar';
-import './CustomerLogin.css';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Sidebar from "./Sidebar";
+import "./CustomerLogin.css";
 
 function CustomerLogin() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [error, setError] = useState(null); // For error messages
   const navigate = useNavigate(); // for navigation
-  
+
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Email:', email);
-    console.log('Password:', password);
+
+    try {
+      const response = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }), // Only email and password sent
+      });
+
+      if (response.ok) {
+        const responseData = await response.json();
+        const { token, role } = responseData;
+        console.log(responseData, role);
+        // Save token and role in local storage
+        localStorage.setItem("token", token);
+        localStorage.setItem("role", role); // Save role in localStorage
+
+        alert("Login successful");
+
+        // Navigate based on the role
+        if (role === "customer") {
+          navigate("/userDashboard"); // Redirect to customer dashboard
+        } else if (role === "farmer") {
+          navigate("/FarmerProductForm"); // Redirect to farmer dashboard
+        } else if (role === "retailer") {
+          navigate("/retailer/dashboard"); // Redirect to retailer dashboard
+        } else if (role === "distributor") {
+          navigate("/distributor/dashboard"); // Redirect to distributor dashboard
+        }
+      } else {
+        const errorData = await response.json();
+        setError(errorData.message); // Show error message
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+      setError("An error occurred. Please try again.");
+    }
   };
 
   const handleRegister = () => {
-    navigate('/customer/signup'); // navigate to Signup page
+    navigate("/customer/signup"); // Navigate to Signup page
   };
 
   return (
@@ -53,8 +89,17 @@ function CustomerLogin() {
               required
             />
           </div>
-          <button type="submit" className="login-button">Login</button>
-          <button type="button" className="register-button" onClick={handleRegister}>Register</button>
+          {error && <p className="error-message">{error}</p>}
+          <button type="submit" className="login-button">
+            Login
+          </button>
+          <button
+            type="button"
+            className="register-button"
+            onClick={handleRegister}
+          >
+            Register
+          </button>
         </form>
       </div>
     </div>
