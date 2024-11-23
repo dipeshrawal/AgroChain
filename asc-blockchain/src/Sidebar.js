@@ -38,23 +38,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         <li onClick={() => handleNavigation('/')}>Home</li>
         <li onClick={() => handleNavigation('/about')}>About Us</li>
         <li onClick={() => handleNavigation('/contact')}>Contact Us</li>
-
-        {/* Login with dropdown on hover */}
-        <li
-          className="login-dropdown"
-          onMouseEnter={() => setIsLoginHovered(true)}
-          onMouseLeave={() => setIsLoginHovered(false)}
-        >
-          Login
-          {isLoginHovered && (
-            <div className="login-options">
-              <button onClick={() => handleNavigation('/login/farmer')}>Farmer Login</button>
-              <button onClick={() => handleNavigation('/login/customer')}>Customer Login</button>
-              <button onClick={() => handleNavigation('/login/distributor')}>Distributor Login</button>
-              <button onClick={() => handleNavigation('/login/retailer')}>Retailer Login</button>
-            </div>
-          )}
-        </li>
+        <li onClick={() => handleNavigation('/login')}>Login</li>
       </ul>
     </div>
   );

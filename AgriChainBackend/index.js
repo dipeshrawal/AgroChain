@@ -5,8 +5,9 @@ const cors = require("cors");
 const connectDB = require("./Connection/DatabaseConnection")
 const app = express();
 const port = 5000;
-const authRoutes = require("./routes/authRoutes")
-const productRoutes = require("./routes/productRoutes")
+const authRoutes = require("./routes/authRoutes");
+const productRoutes = require("./routes/ProductRoutes");
+const stakeholderRoutes = require("./routes/stakeholderdataRoutes");
 
 
 // Middleware to parse JSON
@@ -26,6 +27,7 @@ connectDB();
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
+app.use('/api/stakeholder', stakeholderRoutes);
 
 
 app.listen(port, () => {

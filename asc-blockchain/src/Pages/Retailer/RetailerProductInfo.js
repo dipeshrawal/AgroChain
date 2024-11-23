@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Navbar from './FarmerNavbar';
+import Navbar from './RetailerNavbar';
 
-const ProductList = () => {
+const RetailerProductInfo = () => {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
@@ -20,7 +20,7 @@ const ProductList = () => {
   return (
     <div className=" mx-auto  bg-[#eaf0e1]">
       <Navbar/>
-      <p className=" text-2xl font-semibold text-center text-gray-800 mb-10 mt-6">Your Products</p>
+      <p className=" text-2xl font-semibold text-center text-gray-800 mb-10 mt-6">Products Information</p>
       <div className="overflow-x-auto bg-white px-6 shadow-md rounded-lg">
         <table className="min-w-full table-auto">
           <thead>
@@ -67,4 +67,4 @@ const ProductList = () => {
   );
 };
 
-export default ProductList;
+export default RetailerProductInfo;
