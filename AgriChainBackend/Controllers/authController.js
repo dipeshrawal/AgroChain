@@ -1,16 +1,72 @@
 const jwt = require("jsonwebtoken"); // For generating and verifying tokens
 const bcrypt = require("bcryptjs"); // For password hashing
+const dotenv = require("dotenv");
 const User = require("../models/user"); // Replace with the correct path to your User model
-const Profile = require("../models/profile"); // Correct Profile model import
+const Profile = require("../models/profile"); // Replace with the correct path to your Profile model
 
-// Hardcoded JWT secret key (use .env in production)
-const JWT_SECRET = "your_hardcoded_secret_key";
+dotenv.config(); // Load environment variables
+
+// JWT secret key
+const JWT_SECRET = process.env.JWT_SECRET || "your_hardcoded_secret_key";
+
+// Register User
+exports.registerUser = async (req, res) => {
+  try {
+    const { fullname, email, contact, address, password, role } = req.body;
+
+    // Validate input fields
+    if (!fullname || !email || !contact || !address || !password || !role) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    // Validate role
+    const allowedRoles = ["farmer", "customer", "retailer", "distributor"];
+    if (!allowedRoles.includes(role)) {
+      return res.status(400).json({ message: "Invalid role" });
+    }
+
+    // Check if user already exists
+    let user = await User.findOne({ email });
+    if (user) {
+      return res.status(400).json({ message: "Email already in use" });
+    }
+
+    // Hash the password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // Create a new user
+    user = new User({
+      fullname,
+      email,
+      contact,
+      address,
+      password,
+      role,
+    });
+
+    const savedUser = await user.save();
+
+    // Automatically create a profile linked to the user
+    const newProfile = new Profile({ user: savedUser._id });
+    const savedProfile = await newProfile.save();
+
+    res.status(201).json({
+      message: "User registered successfully",
+      user: savedUser,
+      profile: savedProfile,
+    });
+  } catch (error) {
+    console.error("Error registering user:", error.message);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
 
 // Login User
 exports.loginUser = async (req, res) => {
-  const { email, password } = req.body;
-
   try {
+    const { email, password } = req.body;
+
     // Find the user by email
     const user = await User.findOne({ email });
     if (!user) {
@@ -24,62 +80,25 @@ exports.loginUser = async (req, res) => {
     }
 
     // Generate a JWT token
-    const token = jwt.sign(
-      { id: user._id, email: user.email, role: user.role },
-      JWT_SECRET,
-      { expiresIn: "1h" }
-    );
+    const payload = {
+      user: {
+        id: user._id,
+        email: user.email,
+        role: user.role,
+      },
+    };
 
-    res.status(200).json({
-      message: "Login successful",
-      token,
-      role: user.role,
+    jwt.sign(payload, JWT_SECRET, { expiresIn: "1h" }, (err, token) => {
+      if (err) throw err;
+      res.status(200).json({
+        message: "Login successful",
+        token: `Bearer ${token}`,
+        user,
+        role: user.role,
+      });
     });
   } catch (error) {
-    console.error("Error during login:", error);
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
-// Register User
-exports.registerUser = async (req, res) => {
-  const { fullname, email, contact, address, password, role } = req.body; // Include role in the request body
-
-  try {
-    // Validate role (optional, but ensures only allowed roles are used)
-    if (!["farmer", "customer", "retailer", "distributor"].includes(role)) {
-      return res.status(400).json({ message: "Invalid role" });
-    }
-
-    // Check if the email already exists
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ message: "Email already in use" });
-    }
-
-    // Create and save the new user
-    const newUser = new User({
-      fullname,
-      email,
-      contact,
-      address,
-      password, // Plain password; hashing will be handled by the model
-      role,
-    });
-
-    const savedUser = await newUser.save();
-
-    // Automatically create a profile linked to the user
-    const newProfile = new Profile({ user: savedUser._id });
-    const savedProfile = await newProfile.save();
-
-    res.status(201).json({
-      message: "User registered successfully",
-      user: savedUser,
-      profile: savedProfile,
-    });
-  } catch (error) {
-    console.error("Error during registration:", error);
-    res.status(500).json({ message: "Server error" });
+    console.error("Error logging in:", error.message);
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
