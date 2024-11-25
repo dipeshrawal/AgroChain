@@ -21,6 +21,8 @@ import AddProduct from './Pages/Farmer/AddProduct';
 import RetailerDashboard from './Pages/Retailer/RetailerDashboard';
 import RetailerFarmerdata from './Pages/Retailer/RetailerFarmerdata';
 import RetailerProductInfo from './Pages/Retailer/RetailerProductInfo';
+import FarmerProfile from "./Pages/Farmer/FarmerProfile";
+// import CustomerProfile from './Pages/Customer/CustomerProfile'; 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -44,6 +46,8 @@ root.render(
       <Route path="/retailerdashboard" element={<RetailerDashboard />} />      
       <Route path="/retailerfarmerdata" element={<RetailerFarmerdata />} />      
       <Route path="/retailerproductinfo" element={<RetailerProductInfo />} />      
+      <Route path="/farmerprofile" element={<FarmerProfile />} />      
+      {/* <Route path="/customerprofile" element={<CustomerProfile />} />       */}
 
     </Routes>
   </Router>

@@ -16,13 +16,18 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
 
     try {
       const response = await fetch("http://localhost:5000/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          // 'Authorization': `Bearer ${token}`,
+          
+
         },
+        
         body: JSON.stringify({ email, password }), // Only email and password sent
       });
 
@@ -30,10 +35,15 @@ function Login() {
         const responseData = await response.json();
         const { token, role } = responseData;
         console.log(responseData, role);
+        console.log(token);
         // Save token and role in local storage
         localStorage.setItem("token", token);
-        localStorage.setItem("role", role); // Save role in localStorage
-
+        localStorage.setItem("role", role);
+        
+        // Check token in localStorage
+        const tokenFromStorage = localStorage.getItem("token");
+        console.log("Token from localStorage:", tokenFromStorage); // Verify the token value
+      
         alert("Login successful");
 
         // Navigate based on the role
@@ -42,7 +52,7 @@ function Login() {
         } else if (role === "farmer") {
           navigate("/farmerdashboard"); // Redirect to farmer dashboard
         } else if (role === "retailer") {
-          navigate("/retailer/dashboard"); // Redirect to retailer dashboard
+          navigate("/retailerdashboard"); // Redirect to retailer dashboard
         } else if (role === "distributor") {
           navigate("/distributordashboard"); // Redirect to distributor dashboard
         }
